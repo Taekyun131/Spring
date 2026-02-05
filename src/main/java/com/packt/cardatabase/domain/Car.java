@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Car {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	// 기본 키는 @Id 애너테이션을 이용하여 정의
@@ -61,7 +61,7 @@ public class Car {
 		this.registrationNumber = registrationNumber;
 		this.modelYear = modelYear;
 		this.price = price;
-//		this.owner = owner;
+		this.owner = owner;
 }
 
 	
