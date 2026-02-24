@@ -1,21 +1,24 @@
 package com.packt.cardatabase;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.packt.cardatabase.service.UserDetailsServiceImpl;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 // 두 애너테이션은 기본 웹 보호 구성을 해제하며, 이 클래스에서 자체 구성을 정의할 수 있게 하는 기
 @Configuration
@@ -56,22 +59,29 @@ public class SecurityConfig {
 		return authConfig.getAuthenticationManager();
 	}
 	
+
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-		http.csrf((csrf) -> csrf.disable())
-			.cors(withDefaults())
-			.sessionManagement((sessionManagement) -> 
-								sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		http.csrf((csrf) -> csrf.disable()).cors(withDefaults())
 			.authorizeHttpRequests((authorizeHttpRequests) -> 
-//								authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/login")
-//									.permitAll().anyRequest().authenticated())
-								authorizeHttpRequests.requestMatchers("/admin/**").hasRole("ADMIN")
-													.requestMatchers("/user/**").hasRole("USER")
-													.anyRequest().authenticated())
-			.addFilterBefore(authenticationFilter, 
-					UsernamePasswordAuthenticationFilter.class)
-			.exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
+				authorizeHttpRequests.anyRequest().permitAll());
 		
+		
+//		http.csrf((csrf) -> csrf.disable())
+//			.cors(withDefaults())
+//			.sessionManagement((sessionManagement) -> 
+//								sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//			.authorizeHttpRequests((authorizeHttpRequests) -> 
+////								authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/login")
+////									.permitAll().anyRequest().authenticated())
+//								authorizeHttpRequests.requestMatchers("/admin/**").hasRole("ADMIN")
+//													.requestMatchers("/user/**").hasRole("USER")
+//													.anyRequest().authenticated())
+//			.addFilterBefore(authenticationFilter, 
+//					UsernamePasswordAuthenticationFilter.class)
+//			.exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
+//		
 		return http.build();
 	}
 	

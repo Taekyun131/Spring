@@ -2,7 +2,7 @@ package com.packt.cardatabase;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
@@ -21,24 +21,25 @@ import jakarta.servlet.http.HttpServletResponse;
 public class AuthEntryPoint implements AuthenticationEntryPoint{
 
 	// 전역 CORS 필터 추가
+	
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		CorsConfiguration config = new CorsConfiguration();
-		
-//		config.setAllowedOrigins(Arrays.asList("*"));
-		// 출처를 명시적으로 정의
-		config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-		
-		config.setAllowedMethods(Arrays.asList("*"));
-		config.setAllowedHeaders(Arrays.asList("*"));
-		config.setAllowCredentials(false);
-		config.applyPermitDefaultValues();
-		
-		source.registerCorsConfiguration("/**", config);
-		return source;
-		
+
+	    CorsConfiguration configuration = new CorsConfiguration();
+
+	    configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+	    configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+	    configuration.setAllowedHeaders(List.of("*"));
+	    configuration.setAllowCredentials(true);
+
+	    UrlBasedCorsConfigurationSource source =
+	            new UrlBasedCorsConfigurationSource();
+
+	    source.registerCorsConfiguration("/**", configuration);
+
+	    return source;
 	}
+
 	
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
